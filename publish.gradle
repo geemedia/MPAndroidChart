@@ -1,0 +1,74 @@
+project.afterEvaluate {
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                groupId 'com.github.PhilJay'
+                artifactId releaseArtifact
+                version '3.1.1-anuvu-1'
+                artifact bundleReleaseAar
+                pom.withXml {
+                    def rootNode = asNode()
+                    def dependenciesNode = rootNode.appendNode('dependencies')
+
+                    // List all compile dependencies and write to POM
+                    configurations.implementation.getAllDependencies().each { Dependency dep ->
+                        if (dep.group == null || dep.version == null || dep.name == null || dep.name == "unspecified") {
+                            return // ignore invalid dependencies
+                        }
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        def depGroupId = dep.group
+                        def depVersion = dep.version
+                        if (depGroupId == rootProject.name) {
+                            depGroupId = 'com.anuvu.movesdk'
+                            depVersion = getProjectVersionName()
+                        }
+                        dependencyNode.appendNode('groupId', depGroupId)
+                        dependencyNode.appendNode('artifactId', dep.name)
+                        dependencyNode.appendNode('version', depVersion)
+
+                        if (!dep.transitive) {
+                            // If this dependency is transitive, we should force exclude all its dependencies them from the POM
+                            def exclusionNode = dependencyNode.appendNode('exclusions').appendNode('exclusion')
+                            exclusionNode.appendNode('groupId', '*')
+                            exclusionNode.appendNode('artifactId', '*')
+                        } else if (!dep.properties.excludeRules.empty) {
+                            // Otherwise add specified exclude rules
+                            def exclusionsNode = dependencyNode.appendNode('exclusions')
+                            dep.properties.excludeRules.each { ExcludeRule rule ->
+                                def exclusionNode = exclusionsNode.appendNode('exclusion')
+                                exclusionNode.appendNode('groupId', rule.group ?: '*')
+                                exclusionNode.appendNode('artifactId', rule.module ?: '*')
+                            }
+                        }
+                    }
+
+                    rootNode.appendNode("name", "MPAndroidChart")
+                    def licenses = rootNode.appendNode("licenses")
+                    def license = licenses.appendNode("license")
+                    license.appendNode("name", "The Apache License, Version 2.0")
+                    license.appendNode("url", "http://www.apache.org/licenses/LICENSE-2.0.txt")
+                    rootNode.appendNode("scm").appendNode("url", "https://github.com/geemedia/MPAndroidChart")
+                }
+            }
+        }
+    }
+}
+
+if (project.hasProperty('artifactory_publish_url')) {
+    artifactory {
+        contextUrl = artifactory_publish_url
+        publish {
+            repository {
+                repoKey = artifactory_publish_repo
+                username = artifactory_publish_username
+                password = artifactory_publish_password
+            }
+            defaults {
+                publications('maven')
+                publishArtifacts = true
+                properties = ['qa.level': 'basic', 'q.os': 'android', 'dev.team': 'core']
+                publishPom = true
+            }
+        }
+    }
+}

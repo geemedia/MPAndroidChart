@@ -1,5 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.artifactory'
+apply plugin: 'maven-publish'
+apply from: '../publish.gradle'
 
 group='com.github.philjay'
 
@@ -10,7 +13,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 28
         versionCode 3
-        versionName '3.1.0'
+        versionName '3.1.1-anuvu-1'
     }
     buildTypes {
         release {
@@ -49,3 +52,9 @@ artifacts {
     archives sourcesJar
     archives javadocJar
 }
+
+ext {
+    releaseArtifact = 'MPAndroidChart'
+    releaseArtifactAar = ''
+}
+
