@@ -358,7 +358,7 @@ public abstract class Utils {
         final int pw = 1 - (int) d;
         final float magnitude = (float) Math.pow(10, pw);
         final long shifted = Math.round(number * magnitude);
-        return shifted / magnitude;
+        return Math.round(shifted / magnitude);
     }
 
     /**
