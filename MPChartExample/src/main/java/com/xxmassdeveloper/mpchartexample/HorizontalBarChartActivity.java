@@ -4,6 +4,7 @@ package com.xxmassdeveloper.mpchartexample;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
@@ -87,6 +88,10 @@ public class HorizontalBarChartActivity extends DemoBase implements OnSeekBarCha
         xl.setDrawAxisLine(true);
         xl.setDrawGridLines(false);
         xl.setGranularity(10f);
+        xl.setExtraLabel("+ 10 more");
+        xl.setTextColorExtra(Color.RED);
+        xl.setXOffsetExtra(10);
+        xl.setYOffsetExtra(5);
 
         YAxis yl = chart.getAxisLeft();
         yl.setTypeface(tfLight);

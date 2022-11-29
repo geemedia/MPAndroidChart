@@ -70,17 +70,39 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
         final float labelWidth = (int)(labelSize.width + mXAxis.getXOffset() * 3.5f);
         final float labelHeight = labelSize.height;
 
-        final FSize labelRotatedSize = Utils.getSizeOfRotatedRectangleByDegrees(
-                labelSize.width,
-                labelHeight,
-                mXAxis.getLabelRotationAngle());
+        final FSize extraLabelSize = Utils.calcTextSize(mAxisExtraLabelPaint, mAxis.getExtraLabel());
 
-        mXAxis.mLabelWidth = Math.round(labelWidth);
-        mXAxis.mLabelHeight = Math.round(labelHeight);
-        mXAxis.mLabelRotatedWidth = (int)(labelRotatedSize.width + mXAxis.getXOffset() * 3.5f);
+        final float extraOffset = mXAxis.getXOffset() + mAxis.getXOffsetExtra();
+        final float extraLabelWidth = (int)(extraLabelSize.width + extraOffset * 3.5f);
+        final float extraLabelHeight = extraLabelSize.height;
+
+        final FSize labelRotatedSize;
+        final float offset;
+        if (extraLabelWidth > labelWidth) {
+            labelRotatedSize = Utils.getSizeOfRotatedRectangleByDegrees(
+                    extraLabelSize.width,
+                    extraLabelHeight,
+                    mXAxis.getLabelRotationAngle());
+
+            mXAxis.mLabelWidth = Math.round(extraLabelWidth);
+            mXAxis.mLabelHeight = Math.round(extraLabelHeight);
+            offset = extraOffset;
+        } else {
+            labelRotatedSize = Utils.getSizeOfRotatedRectangleByDegrees(
+                    labelSize.width,
+                    labelHeight,
+                    mXAxis.getLabelRotationAngle());
+
+            mXAxis.mLabelWidth = Math.round(labelWidth);
+            mXAxis.mLabelHeight = Math.round(labelHeight);
+            offset = mXAxis.getXOffset();
+        }
+        mXAxis.mLabelRotatedWidth = (int) (labelRotatedSize.width + offset * 3.5f);
         mXAxis.mLabelRotatedHeight = Math.round(labelRotatedSize.height);
-
         FSize.recycleInstance(labelRotatedSize);
+
+        FSize.recycleInstance(labelSize);
+        FSize.recycleInstance(extraLabelSize);
     }
 
     @Override
@@ -110,7 +132,9 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
         } else if (mXAxis.getPosition() == XAxisPosition.BOTTOM) {
             pointF.x = 1.0f;
             pointF.y = 0.5f;
-            drawLabels(c, mViewPortHandler.contentLeft() - xoffset, pointF);
+            float x = mViewPortHandler.contentLeft() - xoffset;
+            drawLabels(c, x, pointF);
+            drawExtraLabel(c, x - mAxis.getXOffsetExtra(), mViewPortHandler.contentBottom() + mAxis.getYOffsetExtra());
 
         } else if (mXAxis.getPosition() == XAxisPosition.BOTTOM_INSIDE) {
             pointF.x = 1.0f;
@@ -159,6 +183,20 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
                 drawLabel(c, label, pos, y, anchor, labelRotationAngleDegrees);
             }
         }
+    }
+
+    protected void drawExtraLabel(Canvas c, float x, float y) {
+        String extraLabel = mXAxis.getExtraLabel();
+        if (extraLabel.isEmpty()) return;
+
+        mAxisExtraLabelPaint.setTypeface(mXAxis.getTypefaceExtra());
+        mAxisExtraLabelPaint.setTextSize(mXAxis.getTextSizeExtra());
+        mAxisExtraLabelPaint.setColor(mXAxis.getTextColorExtra());
+        mAxisExtraLabelPaint.setTextAlign(Align.CENTER);
+
+        MPPointF anchor = MPPointF.getInstance(1,0);
+        Utils.drawXAxisValue(c, extraLabel, x, y, mAxisExtraLabelPaint, anchor, 0);
+        MPPointF.recycleInstance(anchor);
     }
 
     @Override

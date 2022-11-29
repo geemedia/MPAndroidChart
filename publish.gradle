@@ -2,9 +2,9 @@ project.afterEvaluate {
     publishing {
         publications {
             maven(MavenPublication) {
-                groupId 'com.github.PhilJay'
+                groupId 'com.github.geemedia'
                 artifactId releaseArtifact
-                version '3.1.1-anuvu-1'
+                version '3.1.1-anuvu-2'
                 artifact bundleReleaseAar
                 pom.withXml {
                     def rootNode = asNode()
@@ -18,10 +18,6 @@ project.afterEvaluate {
                         def dependencyNode = dependenciesNode.appendNode('dependency')
                         def depGroupId = dep.group
                         def depVersion = dep.version
-                        if (depGroupId == rootProject.name) {
-                            depGroupId = 'com.anuvu.movesdk'
-                            depVersion = getProjectVersionName()
-                        }
                         dependencyNode.appendNode('groupId', depGroupId)
                         dependencyNode.appendNode('artifactId', dep.name)
                         dependencyNode.appendNode('version', depVersion)
@@ -42,7 +38,7 @@ project.afterEvaluate {
                         }
                     }
 
-                    rootNode.appendNode("name", "MPAndroidChart")
+                    rootNode.appendNode("name", "MPAndroidChart (modified)")
                     def licenses = rootNode.appendNode("licenses")
                     def license = licenses.appendNode("license")
                     license.appendNode("name", "The Apache License, Version 2.0")

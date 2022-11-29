@@ -2,6 +2,7 @@ package com.github.mikephil.charting.components;
 
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
+import android.graphics.Typeface;
 import android.util.Log;
 
 import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter;
@@ -73,6 +74,36 @@ public abstract class AxisBase extends ComponentBase {
      * if true, the set number of y-labels will be forced
      */
     protected boolean mForceLabels = false;
+
+    /**
+     * Optional extra label to display with axis label values.
+     */
+    protected String mExtraLabel = "";
+
+    /**
+     * the typeface used for the extra label
+     */
+    protected Typeface mTypefaceExtra = null;
+
+    /**
+     * the text size of the extra label
+     */
+    protected float mTextSizeExtra = Utils.convertDpToPixel(10f);
+
+    /**
+     * the text color to use for the extra label
+     */
+    protected int mTextColorExtra = Color.BLACK;
+
+    /**
+     * the offset in pixels the extra label has on the x-axis
+     */
+    protected float mXOffsetExtra = 0f;
+
+    /**
+     * the offset in pixels the extra label has on the Y-axis
+     */
+    protected float mYOffsetExtra = 0f;
 
     /**
      * flag indicating if the grid lines for this axis should be drawn
@@ -778,5 +809,124 @@ public abstract class AxisBase extends ComponentBase {
     public void setSpaceMax(float mSpaceMax)
     {
         this.mSpaceMax = mSpaceMax;
+    }
+
+    /**
+     * sets the extra label value
+     *
+     * @param extra the value
+     */
+    public void setExtraLabel(String extra) {
+        mExtraLabel = extra;
+    }
+
+    /**
+     * returns the extra label
+     *
+     * @return
+     */
+    public String getExtraLabel() {
+        return mExtraLabel;
+    }
+
+    /**
+     * returns the Typeface used for the extra label, returns null if none is set
+     *
+     * @return
+     */
+    public Typeface getTypefaceExtra() {
+        return mTypefaceExtra;
+    }
+
+    /**
+     * sets a specific Typeface for the extra label
+     *
+     * @param tf
+     */
+    public void setTypefaceExtra(Typeface tf) {
+        mTypefaceExtra = tf;
+    }
+
+    /**
+     * sets the size of the extra label text in density pixels min = 6f, max = 24f, default
+     * 10f
+     *
+     * @param size the text size, in DP
+     */
+    public void setTextSizeExtra(float size) {
+
+        if (size > 24f)
+            size = 24f;
+        if (size < 6f)
+            size = 6f;
+
+        mTextSizeExtra = Utils.convertDpToPixel(size);
+    }
+
+    /**
+     * returns the text size that is currently set for the extra label, in pixels
+     *
+     * @return
+     */
+    public float getTextSizeExtra() {
+        return mTextSizeExtra;
+    }
+
+
+    /**
+     * Sets the text color to use for the extra label. Make sure to use
+     * getResources().getColor(...) when using a color from the resources.
+     *
+     * @param color
+     */
+    public void setTextColorExtra(int color) {
+        mTextColorExtra = color;
+    }
+
+    /**
+     * Returns the text color that is set for the extra label.
+     *
+     * @return
+     */
+    public int getTextColorExtra() {
+        return mTextColorExtra;
+    }
+
+    /**
+     * Returns the used offset on the x-axis for drawing the axis or legend
+     * labels. This offset is applied before and after the label.
+     *
+     * @return
+     */
+    public float getXOffsetExtra() {
+        return mXOffsetExtra;
+    }
+
+    /**
+     * Sets the used x-axis offset for the labels on this axis.
+     *
+     * @param xOffset
+     */
+    public void setXOffsetExtra(float xOffset) {
+        mXOffsetExtra = Utils.convertDpToPixel(xOffset);
+    }
+
+    /**
+     * Returns the used offset on the x-axis for drawing the axis extra label. This
+     * offset is applied before and after the label.
+     *
+     * @return
+     */
+    public float getYOffsetExtra() {
+        return mYOffsetExtra;
+    }
+
+    /**
+     * Sets the used y-axis offset for the extra label on this axis.
+     *
+     * @param yOffset
+     */
+    public void setYOffsetExtra(float yOffset) {
+        mYOffsetExtra = Utils.convertDpToPixel(yOffset);
     }
 }
