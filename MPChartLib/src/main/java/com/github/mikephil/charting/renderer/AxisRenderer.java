@@ -36,6 +36,11 @@ public abstract class AxisRenderer extends Renderer {
     protected Paint mAxisLabelPaint;
 
     /**
+     * paint for the extra label value
+     */
+    protected Paint mAxisExtraLabelPaint;
+
+    /**
      * paint for the line surrounding the chart
      */
     protected Paint mAxisLinePaint;
@@ -54,6 +59,7 @@ public abstract class AxisRenderer extends Renderer {
         if(mViewPortHandler != null) {
 
             mAxisLabelPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            mAxisExtraLabelPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
             mGridPaint = new Paint();
             mGridPaint.setColor(Color.GRAY);
@@ -78,6 +84,15 @@ public abstract class AxisRenderer extends Renderer {
      */
     public Paint getPaintAxisLabels() {
         return mAxisLabelPaint;
+    }
+
+    /**
+     * Returns the Paint object used for drawing the axis extra label.
+     *
+     * @return
+     */
+    public Paint getPaintAxisExtraLabel() {
+        return mAxisExtraLabelPaint;
     }
 
     /**
