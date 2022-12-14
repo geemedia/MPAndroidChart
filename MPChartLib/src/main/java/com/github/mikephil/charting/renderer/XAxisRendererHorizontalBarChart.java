@@ -69,6 +69,7 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
 
         final float labelWidth = (int)(labelSize.width + mXAxis.getXOffset() * 3.5f);
         final float labelHeight = labelSize.height;
+        final float angle = mXAxis.getLabelRotationAngle();
 
         final FSize extraLabelSize = Utils.calcTextSize(mAxisExtraLabelPaint, mAxis.getExtraLabel());
 
@@ -82,7 +83,7 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
             labelRotatedSize = Utils.getSizeOfRotatedRectangleByDegrees(
                     extraLabelSize.width,
                     extraLabelHeight,
-                    mXAxis.getLabelRotationAngle());
+                    angle);
 
             mXAxis.mLabelWidth = Math.round(extraLabelWidth);
             mXAxis.mLabelHeight = Math.round(extraLabelHeight);
@@ -91,7 +92,7 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
             labelRotatedSize = Utils.getSizeOfRotatedRectangleByDegrees(
                     labelSize.width,
                     labelHeight,
-                    mXAxis.getLabelRotationAngle());
+                    angle);
 
             mXAxis.mLabelWidth = Math.round(labelWidth);
             mXAxis.mLabelHeight = Math.round(labelHeight);
@@ -99,8 +100,22 @@ public class XAxisRendererHorizontalBarChart extends XAxisRenderer {
         }
         mXAxis.mLabelRotatedWidth = (int) (labelRotatedSize.width + offset * 3.5f);
         mXAxis.mLabelRotatedHeight = Math.round(labelRotatedSize.height);
-        FSize.recycleInstance(labelRotatedSize);
 
+        if (angle != 0) {
+            String first = mAxis.getFormattedLabel(0);
+            final FSize firstLabelSize = Utils.calcTextSize(mAxisLabelPaint, first);
+            final FSize firstLabelRotatedSize = Utils.getSizeOfRotatedRectangleByDegrees(
+                    firstLabelSize.width,
+                    labelHeight,
+                    mXAxis.getLabelRotationAngle());
+            mXAxis.mFirstLabelRotatedWidth = Math.round(firstLabelRotatedSize.width);
+            FSize.recycleInstance(firstLabelRotatedSize);
+            FSize.recycleInstance(firstLabelSize);
+        } else {
+            mXAxis.mFirstLabelRotatedWidth = 0;
+        }
+
+        FSize.recycleInstance(labelRotatedSize);
         FSize.recycleInstance(labelSize);
         FSize.recycleInstance(extraLabelSize);
     }
