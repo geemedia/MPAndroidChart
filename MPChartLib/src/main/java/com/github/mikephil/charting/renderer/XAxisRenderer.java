@@ -84,17 +84,31 @@ public class XAxisRenderer extends AxisRenderer {
 
         final float labelWidth = labelSize.width;
         final float labelHeight = Utils.calcTextHeight(mAxisLabelPaint, "Q");
+        final float angle = mXAxis.getLabelRotationAngle();
 
         final FSize labelRotatedSize = Utils.getSizeOfRotatedRectangleByDegrees(
                 labelWidth,
                 labelHeight,
-                mXAxis.getLabelRotationAngle());
-
+                angle);
 
         mXAxis.mLabelWidth = Math.round(labelWidth);
         mXAxis.mLabelHeight = Math.round(labelHeight);
         mXAxis.mLabelRotatedWidth = Math.round(labelRotatedSize.width);
         mXAxis.mLabelRotatedHeight = Math.round(labelRotatedSize.height);
+
+        if (angle != 0) {
+            String first = mAxis.getFormattedLabel(0);
+            final FSize firstLabelSize = Utils.calcTextSize(mAxisLabelPaint, first);
+            final FSize firstLabelRotatedSize = Utils.getSizeOfRotatedRectangleByDegrees(
+                    firstLabelSize.width,
+                    labelHeight,
+                    angle);
+            mXAxis.mFirstLabelRotatedWidth = Math.round(firstLabelRotatedSize.width);
+            FSize.recycleInstance(firstLabelRotatedSize);
+            FSize.recycleInstance(firstLabelSize);
+        } else {
+            mXAxis.mFirstLabelRotatedWidth = 0;
+        }
 
         FSize.recycleInstance(labelRotatedSize);
         FSize.recycleInstance(labelSize);

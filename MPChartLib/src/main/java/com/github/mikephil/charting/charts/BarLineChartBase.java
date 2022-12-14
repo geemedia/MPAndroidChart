@@ -488,6 +488,12 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleBubbleData<
 
                 float xLabelHeight = mXAxis.mLabelRotatedHeight + mXAxis.getYOffset();
 
+                float xFirstLabelWidth = mXAxis.mFirstLabelRotatedWidth;
+
+                if (xFirstLabelWidth > offsetLeft) {
+                    offsetLeft = xFirstLabelWidth;
+                }
+
                 // offsets for x-labels
                 if (mXAxis.getPosition() == XAxisPosition.BOTTOM) {
 

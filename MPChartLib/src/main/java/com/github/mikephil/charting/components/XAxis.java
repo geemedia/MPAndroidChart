@@ -31,6 +31,12 @@ public class XAxis extends AxisBase {
     public int mLabelRotatedWidth = 1;
 
     /**
+     * width of the (rotated) first x-axis label in pixels - this is automatically
+     * calculated by the computeSize() methods in the renderers
+     */
+    public int mFirstLabelRotatedWidth = 0;
+
+    /**
      * height of the (rotated) x-axis labels in pixels - this is automatically
      * calculated by the computeSize() methods in the renderers
      */
